@@ -1,0 +1,19 @@
+{
+  "name": "vasavi-traders",
+  "version": "1.0.0",
+  "description": "Vasavi Traders - Transaction & Auditing Settlement Portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "server": "node server.js"
+  },
+  "keywords": [
+    "vasavi-traders",
+    "reconciliation",
+    "audit",
+    "accounting"
+  ],
+  "author": "Vasavi Traders",
+  "license": "ISC"
+}

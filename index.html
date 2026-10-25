@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VASAVI TRADERS | Instant Credit Card Cash Withdrawal & Bank Payout Services</title>
+  <meta name="description" content="Withdraw cash from credit card directly to your bank account instantly with lowest fee starting from 1.6%, 45 days interest-free period, and 100% reward point retention. 24/7 IMPS payout.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#080B11',
+            slateDark: '#0F172A',
+            emeraldAccent: '#00E699',
+            goldAccent: '#F59E0B',
+            cyanAccent: '#06B6D4'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#080B11] text-slate-100 min-h-screen relative antialiased selection:bg-emerald-500 selection:text-black">
+
+  <!-- Background Animated Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Live Rate Ticker Top Bar -->
+  <div class="bg-slate-900/90 border-b border-white/5 text-xs py-2 overflow-hidden backdrop-blur-md">
+    <div class="marquee-container">
+      <div class="marquee-content font-mono text-slate-400">
+        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> VISA ALL CARDS: 1.8% FEE</span>
+        <span class="text-slate-600">|</span>
+        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> RUPAY NETWORK: 1.6% FEE</span>
+        <span class="text-slate-600">|</span>
+        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-goldAccent animate-pulse"></span> MASTERCARD ALL CARDS: 1.8% FEE</span>
+        <span class="text-slate-600">|</span>
+        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> SBI / HDFC / ONECARD: 2.0% FEE</span>
+        <span class="text-slate-600">|</span>
+        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-cyanAccent animate-pulse"></span> IMPS SETTLEMENT: INSTANT 24x7</span>
+        <span class="text-slate-600">|</span>
+        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> REWARD POINTS: 100% PRESERVED</span>
+        <span class="text-slate-600">|</span>
+        <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> PCI-DSS LEVEL 1 CERTIFIED</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-[#080B11]/80 backdrop-blur-xl border-b border-white/10 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-14 bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-500 p-0.5 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+          <div class="w-full h-full bg-slate-950 rounded-[12px] flex items-center justify-center">
+            <i class="fas fa-credit-card text-emerald-400 text-lg"></i>
+          </div>
+        </div>
+        <div>
+          <span class="text-2xl font-extrabold tracking-tight text-white font-heading"><span class="gradient-text-emerald">VASAVI</span> TRADERS</span>
+          <span class="block text-[10px] text-slate-400 uppercase tracking-widest font-mono font-medium">Credit Card Financial Services</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+        <a href="#bin-checker" class="hover:text-emerald-400 transition-colors">BIN Checker</a>
+        <a href="#calculator" class="hover:text-emerald-400 transition-colors">Fee Calculator</a>
+        <a href="#how-it-works" class="hover:text-emerald-400 transition-colors">How It Works</a>
+        <a href="#supported-banks" class="hover:text-emerald-400 transition-colors">Supported Banks</a>
+
+        <a href="#security" class="hover:text-emerald-400 transition-colors">Security</a>
+        <a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
+        <a href="audit.html" class="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1.5 font-semibold">
+          <i class="fas fa-file-excel text-xs"></i> Audit Portal
+        </a>
+      </nav>
+
+      <!-- Currency Switcher & CTA -->
+      <div class="flex items-center gap-3">
+        <!-- Audit Portal Button (Mobile / Quick access) -->
+        <a href="audit.html" class="px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-mono font-bold transition-all flex items-center gap-1.5" title="Access Excel Matching & Settlement Audit Portal">
+          <i class="fas fa-lock text-[10px]"></i>
+          <span class="hidden sm:inline">Audit</span>
+        </a>
+
+        <!-- Currency Select Dropdown -->
+        <select id="currency-select" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none focus:border-emerald-400 cursor-pointer font-mono">
+          <option value="INR">INR (₹)</option>
+          <option value="USD">USD ($)</option>
+          <option value="EUR">EUR (€)</option>
+        </select>
+
+        <!-- Primary Action Button -->
+        <button class="trigger-withdraw-modal btn-primary hidden sm:inline-flex text-sm">
+          <span>Withdraw Cash</span>
+          <i class="fas fa-bolt text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Hero Text & CTA -->
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          
+          <!-- Pill Badge -->
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+            <span class="pulse-dot"></span>
+            <span>24/7 Instant Credit Card Cash Payout</span>
+          </div>
+
+          <!-- Main Headline -->
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight font-heading">
+            Convert <span class="gradient-text-emerald">Credit Card Limit</span> into Bank Cash Instantly
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+            Need urgent liquidity or cash in your bank account? Withdraw money from any Visa, Mastercard, RuPay, or Amex credit card directly to your bank account with lowest fee starting from 1.6% and zero interest for up to 45 days.
+          </p>
+
+          <!-- Key Highlights Chips -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs font-medium text-slate-300 max-w-lg mx-auto lg:mx-0">
+            <div class="flex items-center gap-2 bg-slate-900/60 border border-slate-800 p-2.5 rounded-xl">
+              <i class="fas fa-percentage text-emerald-400"></i>
+              <span>From 1.6% Fee (RuPay)</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/60 border border-slate-800 p-2.5 rounded-xl">
+              <i class="fas fa-bolt text-emerald-400"></i>
+              <span>0s IMPS Bank Transfer</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/60 border border-slate-800 p-2.5 rounded-xl">
+              <i class="fas fa-gift text-goldAccent"></i>
+              <span>100% Reward Points</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/60 border border-slate-800 p-2.5 rounded-xl">
+              <i class="fas fa-calendar-alt text-cyanAccent"></i>
+              <span>45 Days 0% Interest</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/60 border border-slate-800 p-2.5 rounded-xl">
+              <i class="fas fa-shield-alt text-emerald-400"></i>
+              <span>PCI-DSS Level 1 Safe</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/60 border border-slate-800 p-2.5 rounded-xl">
+              <i class="fas fa-chart-line text-emerald-400"></i>
+              <span>No Credit Score Impact</span>
+            </div>
+          </div>
+
+          <!-- Hero CTAs -->
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+            <a href="#calculator" class="w-full sm:w-auto text-center px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-extrabold text-base shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3">
+              <span>Calculate Fee & Withdraw</span>
+              <i class="fas fa-calculator"></i>
+            </a>
+            <button class="trigger-withdraw-modal w-full sm:w-auto text-center btn-secondary text-base py-4">
+              <span>Instant Cashout Demo</span>
+              <i class="fas fa-arrow-right text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Trust Badges Under CTA -->
+          <div class="pt-4 flex items-center justify-center lg:justify-start gap-6 text-xs text-slate-400 font-mono">
+            <span class="flex items-center gap-1.5"><i class="fas fa-lock text-emerald-400"></i> 256-Bit SSL Encrypted</span>
+            <span class="flex items-center gap-1.5"><i class="fas fa-university text-cyan-400"></i> 150+ Banks Supported</span>
+          </div>
+
+        </div>
+
+        <!-- Hero 3D Metallic Credit Card Image & Live Card Visualizer -->
+        <div class="lg:col-span-5 relative">
+          
+          <!-- Glow Backdrop -->
+          <div class="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 rounded-3xl blur-2xl -z-10"></div>
+          
+          <!-- Image Asset Container -->
+          <div class="glass-panel p-4 rounded-3xl border border-white/10 relative overflow-hidden group">
+            <img src="assets/card-hero.jpg" alt="Luxury Titanium Credit Card" class="w-full h-auto rounded-2xl object-cover shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
+            
+            <!-- Floating Live Stat Badges -->
+            <div class="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/30 backdrop-blur-md flex items-center justify-between shadow-2xl">
+              <div>
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider font-mono">Total Processed</span>
+                <div class="text-xl font-extrabold text-white font-mono">₹500,00,00,000+</div>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-emerald-400 uppercase tracking-wider font-mono font-bold">Instant Payout</span>
+                <div class="text-xs text-slate-300 font-medium flex items-center gap-1 justify-end">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 99.9% Success Rate
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BIN CHECKER SECTION ===================== -->
+  <section id="bin-checker" class="py-16 relative">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="text-center mb-10">
+        <span class="text-xs text-emerald-400 uppercase tracking-widest font-mono font-bold">Manual Card Lookup Tool</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white font-heading mt-2">
+          Credit Card <span class="gradient-text-emerald">BIN Checker</span>
+        </h2>
+        <p class="text-slate-400 text-sm mt-3 max-w-xl mx-auto">
+          Enter the first 6–8 digits of any credit card to instantly identify the card network, issuing bank, card type, country, and applicable withdrawal fee.
+        </p>
+      </div>
+
+      <!-- BIN Input Card -->
+      <div class="glass-panel-emerald p-6 sm:p-8 rounded-3xl space-y-6">
+
+        <!-- Input Row -->
+        <div class="flex flex-col sm:flex-row gap-4 items-stretch">
+          <div class="flex-1 relative">
+            <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              <i class="fas fa-credit-card text-emerald-400 text-base"></i>
+            </div>
+            <input
+              type="text"
+              id="bin-input"
+              maxlength="8"
+              placeholder="Enter first 6–8 digits  e.g. 4111 1111"
+              class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-400 rounded-xl pl-11 pr-4 py-3.5 text-white text-base font-mono tracking-widest outline-none transition-all"
+              oninput="this.value=this.value.replace(/[^0-9]/g,''); handleBINInput(this.value)"
+            >
+          </div>
+          <button onclick="runBINCheck()" class="btn-primary px-8 py-3.5 text-base font-bold shrink-0">
+            <i class="fas fa-search"></i> Check BIN
+          </button>
+          <button onclick="clearBINChecker()" class="btn-secondary px-5 py-3.5 text-sm shrink-0">
+            <i class="fas fa-times"></i> Clear
+          </button>
+        </div>
+
+        <!-- Live Auto-detect strip (shows after 6+ digits typed) -->
+        <div id="bin-live-strip" class="hidden text-xs font-mono text-slate-400 flex items-center gap-2">
+          <i class="fas fa-circle-notch fa-spin text-emerald-400"></i> Auto-detecting…
+        </div>
+
+        <!-- Result Panel -->
+        <div id="bin-result-panel" class="hidden">
+          <div class="border-t border-white/10 pt-6">
+
+            <!-- Result Header -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div class="flex items-center gap-4">
+                <div id="bin-network-badge" class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl">
+                  <i class="fas fa-credit-card text-slate-400"></i>
+                </div>
+                <div>
+                  <h3 id="bin-card-title" class="text-lg font-extrabold text-white font-heading">—</h3>
+                  <p id="bin-card-subtitle" class="text-xs text-slate-400">—</p>
+                </div>
+              </div>
+              <div id="bin-status-badge" class="px-3 py-1.5 rounded-full text-xs font-bold border">—</div>
+            </div>
+
+            <!-- Detail Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+
+              <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-mono block mb-1">Card Network</span>
+                <span id="bin-network" class="text-sm font-bold text-white">—</span>
+              </div>
+
+              <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-mono block mb-1">Issuing Bank</span>
+                <span id="bin-bank" class="text-sm font-bold text-white">—</span>
+              </div>
+
+              <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-mono block mb-1">Card Type</span>
+                <span id="bin-card-type" class="text-sm font-bold text-white">—</span>
+              </div>
+
+              <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-mono block mb-1">Card Category</span>
+                <span id="bin-card-category" class="text-sm font-bold text-white">—</span>
+              </div>
+
+              <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-mono block mb-1">Country</span>
+                <span id="bin-country" class="text-sm font-bold text-white">—</span>
+              </div>
+
+              <div class="bg-slate-950/60 border border-emerald-500/30 rounded-2xl p-4">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-mono block mb-1">VASAVI TRADERS Fee Rate</span>
+                <span id="bin-fee-rate" class="text-sm font-extrabold text-emerald-400">—</span>
+              </div>
+
+            </div>
+
+            <!-- Apply to Calculator CTA -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button id="bin-apply-btn" onclick="applyBINToCalculator()" class="btn-primary flex-1 py-3 text-sm font-bold justify-center">
+                <i class="fas fa-calculator"></i> Apply to Fee Calculator
+              </button>
+              <a href="#calculator" class="btn-secondary flex-1 py-3 text-sm font-bold flex items-center justify-center gap-2">
+                <i class="fas fa-arrow-down"></i> Go to Calculator
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Not Found Panel -->
+        <div id="bin-notfound-panel" class="hidden pt-4 border-t border-white/10 text-center space-y-2">
+          <i class="fas fa-search text-3xl text-slate-600"></i>
+          <p class="text-slate-400 text-sm">BIN not found in local database. Please check the digits and try again, or enter manually in the calculator below.</p>
+        </div>
+
+        <!-- Quick Sample BINs -->
+        <div class="pt-4 border-t border-white/10">
+          <p class="text-[11px] text-slate-500 uppercase tracking-widest font-mono mb-3">Quick Test BINs</p>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="testBIN('411111')" class="px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-slate-300 hover:border-emerald-400 hover:text-emerald-400 transition-all">411111 (Visa)</button>
+            <button onclick="testBIN('522345')" class="px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-slate-300 hover:border-emerald-400 hover:text-emerald-400 transition-all">522345 (MC)</button>
+            <button onclick="testBIN('508500')" class="px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-slate-300 hover:border-emerald-400 hover:text-emerald-400 transition-all">508500 (RuPay)</button>
+            <button onclick="testBIN('374251')" class="px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-slate-300 hover:border-emerald-400 hover:text-emerald-400 transition-all">374251 (Amex)</button>
+            <button onclick="testBIN('459150')" class="px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-slate-300 hover:border-emerald-400 hover:text-emerald-400 transition-all">459150 (HDFC Visa)</button>
+            <button onclick="testBIN('524715')" class="px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-slate-300 hover:border-emerald-400 hover:text-emerald-400 transition-all">524715 (SBI MC)</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- =============================================================== -->
+
+  <!-- Interactive Withdrawal Fee Calculator Section -->
+  <section id="calculator" class="py-16 bg-slate-900/40 border-y border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white font-heading">
+          Credit Card Cashout <span class="gradient-text-emerald">Fee Calculator</span>
+        </h2>
+        <p class="mt-3 text-slate-400 text-sm sm:text-base">
+          Select your credit card network, enter your withdrawal amount, and see instant gross payout, fee rates, and reward points earned.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Calculator Inputs Column -->
+        <div class="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-3xl space-y-6">
+          
+          <!-- Card Network Selector -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">1. Select Credit Card Network</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="card-network-grid">
+              
+              <!-- RuPay -->
+              <label class="cursor-pointer">
+                <input type="radio" name="cardType" value="rupay" class="peer hidden" onchange="state.currentCardType='rupay'; updateCalculatorUI(); updateCreditCardPreview();">
+                <div class="p-3.5 rounded-2xl border border-slate-700 bg-slate-800/50 peer-checked:border-emerald-400 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 transition-all flex flex-col items-center gap-1.5 text-center">
+                  <i class="fas fa-credit-card text-emerald-400 text-lg"></i>
+                  <span class="font-bold text-xs">RuPay Network</span>
+                  <span class="text-[10px] text-emerald-400 font-mono font-bold">1.6% Fee</span>
+                </div>
+              </label>
+
+              <!-- Visa -->
+              <label class="cursor-pointer">
+                <input type="radio" name="cardType" value="visa" checked class="peer hidden" onchange="state.currentCardType='visa'; updateCalculatorUI(); updateCreditCardPreview();">
+                <div class="p-3.5 rounded-2xl border border-slate-700 bg-slate-800/50 peer-checked:border-emerald-400 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 transition-all flex flex-col items-center gap-1.5 text-center">
+                  <i class="fab fa-cc-visa text-blue-400 text-lg"></i>
+                  <span class="font-bold text-xs">Visa (All Cards)</span>
+                  <span class="text-[10px] text-emerald-400 font-mono font-bold">1.8% Fee</span>
+                </div>
+              </label>
+
+              <!-- Mastercard -->
+              <label class="cursor-pointer">
+                <input type="radio" name="cardType" value="mastercard" class="peer hidden" onchange="state.currentCardType='mastercard'; updateCalculatorUI(); updateCreditCardPreview();">
+                <div class="p-3.5 rounded-2xl border border-slate-700 bg-slate-800/50 peer-checked:border-emerald-400 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 transition-all flex flex-col items-center gap-1.5 text-center">
+                  <i class="fab fa-cc-mastercard text-orange-400 text-lg"></i>
+                  <span class="font-bold text-xs">Mastercard (All)</span>
+                  <span class="text-[10px] text-emerald-400 font-mono font-bold">1.8% Fee</span>
+                </div>
+              </label>
+
+              <!-- SBI / HDFC / OneCard -->
+              <label class="cursor-pointer">
+                <input type="radio" name="cardType" value="sbi_hdfc" class="peer hidden" onchange="state.currentCardType='sbi_hdfc'; updateCalculatorUI(); updateCreditCardPreview();">
+                <div class="p-3.5 rounded-2xl border border-slate-700 bg-slate-800/50 peer-checked:border-emerald-400 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 transition-all flex flex-col items-center gap-1.5 text-center">
+                  <i class="fas fa-university text-rose-400 text-lg"></i>
+                  <span class="font-bold text-xs">SBI / HDFC / OneCard</span>
+                  <span class="text-[10px] text-rose-400 font-mono font-bold">2.0% Fee</span>
+                </div>
+              </label>
+
+              <!-- Corporate -->
+              <label class="cursor-pointer">
+                <input type="radio" name="cardType" value="corporate" class="peer hidden" onchange="state.currentCardType='corporate'; updateCalculatorUI(); updateCreditCardPreview();">
+                <div class="p-3.5 rounded-2xl border border-slate-700 bg-slate-800/50 peer-checked:border-emerald-400 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-400 transition-all flex flex-col items-center gap-1.5 text-center">
+                  <i class="fas fa-briefcase text-amber-400 text-lg"></i>
+                  <span class="font-bold text-xs">Corporate Card</span>
+                  <span class="text-[10px] text-rose-400 font-mono font-bold">2.0% Fee</span>
+                </div>
+              </label>
+
+            </div>
+
+          </div>
+
+          <!-- Withdrawal Amount Input & Slider -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">2. Enter Withdrawal Amount</label>
+              <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl px-3 py-1 text-sm font-mono text-emerald-400">
+                <span class="text-slate-500 mr-1">Amount:</span>
+                <input type="number" id="calc-custom-input" value="50000" class="bg-transparent text-right w-28 outline-none font-bold text-emerald-400">
+              </div>
+            </div>
+
+            <input type="range" id="calc-slider" min="1000" max="500000" step="1000" value="50000" class="mt-4">
+
+            <!-- Preset Amount Buttons -->
+            <div class="flex flex-wrap gap-2 mt-4">
+              <button onclick="selectPresetAmount(10000)" class="preset-btn px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-mono hover:border-emerald-400 transition-all">₹10,000</button>
+              <button onclick="selectPresetAmount(25000)" class="preset-btn px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-mono hover:border-emerald-400 transition-all">₹25,000</button>
+              <button onclick="selectPresetAmount(50000)" class="preset-btn px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-mono hover:border-emerald-400 transition-all">₹50,000</button>
+              <button onclick="selectPresetAmount(100000)" class="preset-btn px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-mono hover:border-emerald-400 transition-all">₹1,00,000</button>
+              <button onclick="selectPresetAmount(250000)" class="preset-btn px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-mono hover:border-emerald-400 transition-all">₹2,50,000</button>
+            </div>
+          </div>
+
+          <!-- Card Benefit Pill -->
+          <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-goldAccent/10 border border-goldAccent/30 flex items-center justify-center text-goldAccent">
+                <i class="fas fa-gift"></i>
+              </div>
+              <div>
+                <span class="font-bold text-slate-200">Estimated Credit Card Reward Points</span>
+                <div class="text-slate-400 text-[11px]">Points credited to your card statement</div>
+              </div>
+            </div>
+            <span id="display-rewards" class="font-mono font-extrabold text-goldAccent text-sm">+2,500 PTS</span>
+          </div>
+
+        </div>
+
+        <!-- Breakdown & Action Summary Column -->
+        <div class="lg:col-span-5">
+          <div class="glass-panel-emerald p-6 sm:p-8 rounded-3xl space-y-6 relative overflow-hidden">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+              <div>
+                <span class="text-xs text-slate-400 uppercase tracking-widest font-mono">Payout Summary</span>
+                <h3 id="calc-card-name" class="text-base font-bold text-white">Visa Signature / Platinum</h3>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-400/30">Instant IMPS</span>
+            </div>
+
+            <!-- Calculation Lines -->
+            <div class="space-y-3 font-mono text-sm">
+              <div class="flex items-center justify-between text-slate-300">
+                <span>Gross Card Amount:</span>
+                <span id="display-gross" class="font-bold text-white">₹50,000</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>Processing Fee Rate:</span>
+                <span id="display-fee-percent" class="font-bold text-emerald-400">1.8%</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>Platform Processing Fee:</span>
+                <span id="display-fee-amount" class="text-rose-400">- ₹900</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-400 text-xs">
+                <span>IMPS Bank Transfer Fee:</span>
+                <span class="text-emerald-400">FREE (₹0)</span>
+              </div>
+              
+              <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                <div>
+                  <span class="text-xs text-slate-400 block font-sans">Net Deposited to Bank:</span>
+                  <span id="display-net-payout" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">₹49,100</span>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Direct Action Trigger -->
+            <button class="trigger-withdraw-modal w-full py-4 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-slate-950 font-extrabold text-base shadow-xl shadow-emerald-500/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+              <span>Initiate Instant Cashout</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+
+            <div class="text-center text-[11px] text-slate-400 font-mono">
+              <i class="fas fa-shield-alt text-emerald-400"></i> Encrypted 256-Bit SSL Transfer • 0% Credit Score Impact
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs text-emerald-400 uppercase tracking-widest font-mono font-bold">4-Step Simple Process</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white font-heading mt-2">
+          How Credit Card Cash Withdrawal Works
+        </h2>
+        <p class="text-slate-400 text-sm mt-3">
+          Withdraw money in under 60 seconds directly into your savings, current, or UPI account.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Step 1 -->
+        <div class="glass-panel p-6 rounded-2xl relative space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-xl font-bold font-mono">
+            01
+          </div>
+          <h3 class="text-lg font-bold text-white">Enter Amount & Card</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Specify the cashout amount and enter your credit card number. Works with Visa, Mastercard, RuPay, and Amex.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="glass-panel p-6 rounded-2xl relative space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-xl font-bold font-mono">
+            02
+          </div>
+          <h3 class="text-lg font-bold text-white">Provide Bank Details</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Enter your receiving bank account number, IFSC code, or UPI ID. Instant Penny-drop verification checks ownership.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="glass-panel p-6 rounded-2xl relative space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-xl font-bold font-mono">
+            03
+          </div>
+          <h3 class="text-lg font-bold text-white">Authenticate 2FA OTP</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Authorize the transaction safely via standard 3D Secure 2FA SMS/Email OTP provided by your issuing bank.
+          </p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="glass-panel p-6 rounded-2xl relative space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-xl font-bold font-mono">
+            04
+          </div>
+          <h3 class="text-lg font-bold text-white">Instant IMPS Credit</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Funds are dispatched instantly via 24/7 IMPS/NEFT routing into your bank account with zero delay.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Supported Banks & Card Networks Grid -->
+  <section id="supported-banks" class="py-16 bg-slate-900/50 border-y border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-heading">
+          Supported Issuing Banks & Card Networks
+        </h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-2">
+          Direct instant IMPS/NEFT settlement supported across 150+ major banks worldwide.
+        </p>
+      </div>
+
+      <!-- Banks -->
+      <p class="text-xs text-slate-500 uppercase tracking-widest font-mono mb-5 text-center">Issuing Banks</p>
+      <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/hdfcbank.com" alt="HDFC Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">HDFC Bank</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/sbi.co.in" alt="SBI Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">SBI Bank</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/icicibank.com" alt="ICICI Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">ICICI Bank</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/axisbank.com" alt="Axis Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">Axis Bank</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/kotak.com" alt="Kotak Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">Kotak Bank</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/indusind.com" alt="IndusInd Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">IndusInd</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/yesbank.in" alt="Yes Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">Yes Bank</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/bankofbaroda.in" alt="Bank of Baroda" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">Bank of Baroda</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/pnbindia.in" alt="PNB" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">PNB</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/citi.com" alt="Citi Bank" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">Citi Bank</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/hsbc.co.in" alt="HSBC" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">HSBC</span>
+        </div>
+
+        <div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500/40 transition-all group">
+          <img src="https://logo.clearbit.com/sc.com" alt="Standard Chartered" class="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold text-center">Std Chartered</span>
+        </div>
+
+      </div>
+
+      <!-- Card Networks -->
+      <p class="text-xs text-slate-500 uppercase tracking-widest font-mono mb-5 text-center">Card Networks</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
+
+        <div class="glass-panel p-5 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-blue-400/40 transition-all group">
+          <img src="https://logo.clearbit.com/visa.com" alt="Visa" class="h-8 object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold">Visa</span>
+        </div>
+
+        <div class="glass-panel p-5 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-orange-400/40 transition-all group">
+          <img src="https://logo.clearbit.com/mastercard.com" alt="Mastercard" class="h-8 object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold">Mastercard</span>
+        </div>
+
+        <div class="glass-panel p-5 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-emerald-400/40 transition-all group">
+          <img src="https://logo.clearbit.com/rupay.co.in" alt="RuPay" class="h-8 object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold">RuPay</span>
+        </div>
+
+        <div class="glass-panel p-5 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-cyan-400/40 transition-all group">
+          <img src="https://logo.clearbit.com/americanexpress.com" alt="Amex" class="h-8 object-contain group-hover:scale-110 transition-transform">
+          <span class="text-[11px] text-slate-300 font-semibold">Amex</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <!-- Security & Compliance Section -->
+  <section id="security" class="py-20 bg-slate-900/40 border-y border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Generated Security Badge Image -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative group">
+            <div class="absolute -inset-4 bg-emerald-500/20 rounded-full blur-xl group-hover:bg-emerald-500/30 transition-all"></div>
+            <img src="assets/security-shield.jpg" alt="Security Shield 256-bit Encryption" class="w-72 h-72 rounded-3xl object-cover border border-emerald-500/30 shadow-2xl relative z-10">
+          </div>
+        </div>
+
+        <!-- Security Details -->
+        <div class="lg:col-span-7 space-y-6">
+          <span class="text-xs text-emerald-400 uppercase tracking-widest font-mono font-bold">BANK-GRADE INFRASTRUCTURE</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white font-heading">
+            Enterprise Security & <span class="gradient-text-emerald">Regulatory Compliance</span>
+          </h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Your safety is our highest priority. All credit card payouts are processed through PCI-DSS Level 1 compliant payment gateways with end-to-end 256-Bit SSL tokenization.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div class="bg-slate-950/70 border border-slate-800 p-4 rounded-xl flex items-start gap-3">
+              <i class="fas fa-shield-alt text-emerald-400 text-xl mt-0.5"></i>
+              <div>
+                <h4 class="text-sm font-bold text-white">PCI-DSS Level 1</h4>
+                <p class="text-xs text-slate-400 mt-1">Highest level of global payment card security standard certification.</p>
+              </div>
+            </div>
+
+            <div class="bg-slate-950/70 border border-slate-800 p-4 rounded-xl flex items-start gap-3">
+              <i class="fas fa-key text-emerald-400 text-xl mt-0.5"></i>
+              <div>
+                <h4 class="text-sm font-bold text-white">256-Bit Encryption</h4>
+                <p class="text-xs text-slate-400 mt-1">All card inputs tokenized with bank-grade 3D Secure 2FA protection.</p>
+              </div>
+            </div>
+
+            <div class="bg-slate-950/70 border border-slate-800 p-4 rounded-xl flex items-start gap-3">
+              <i class="fas fa-user-check text-emerald-400 text-xl mt-0.5"></i>
+              <div>
+                <h4 class="text-sm font-bold text-white">Penny-Drop Account Check</h4>
+                <p class="text-xs text-slate-400 mt-1">Instant verification of destination bank account name matching.</p>
+              </div>
+            </div>
+
+            <div class="bg-slate-950/70 border border-slate-800 p-4 rounded-xl flex items-start gap-3">
+              <i class="fas fa-robot text-emerald-400 text-xl mt-0.5"></i>
+              <div>
+                <h4 class="text-sm font-bold text-white">24/7 Anti-Fraud Shield</h4>
+                <p class="text-xs text-slate-400 mt-1">Automated anomaly detection monitoring suspicious transactions.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Searchable FAQ Accordion Section -->
+  <section id="faq" class="py-20 relative">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-extrabold text-white font-heading">
+          Frequently Asked Questions
+        </h2>
+        <p class="text-slate-400 text-sm mt-2">
+          Everything you need to know about credit card cash withdrawal & instant payouts.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        
+        <!-- FAQ 1 -->
+        <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden">
+          <button class="faq-header w-full p-5 text-left font-bold text-white flex items-center justify-between gap-4 hover:text-emerald-400 transition-colors">
+            <span>Is credit card cash withdrawal to bank account legal and safe?</span>
+            <i class="fas fa-chevron-down faq-icon transition-transform duration-300 text-emerald-400"></i>
+          </button>
+          <div class="faq-content p-5 pt-0 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-slate-800/60 hidden">
+            Yes, completely. Credit card cash withdrawal via payment gateway service providers is fully compliant under RBI guidelines for digital card transactions. Funds are transferred safely to your verified bank account via 24/7 IMPS.
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden">
+          <button class="faq-header w-full p-5 text-left font-bold text-white flex items-center justify-between gap-4 hover:text-emerald-400 transition-colors">
+            <span>How fast will the cash reflect in my bank account?</span>
+            <i class="fas fa-chevron-down faq-icon transition-transform duration-300 text-emerald-400"></i>
+          </button>
+          <div class="faq-content p-5 pt-0 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-slate-800/60 hidden">
+            Payouts are instant! As soon as your issuing bank approves the 2FA OTP, our system routes the cash directly into your bank account via IMPS/UPI within 30 to 60 seconds.
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden">
+          <button class="faq-header w-full p-5 text-left font-bold text-white flex items-center justify-between gap-4 hover:text-emerald-400 transition-colors">
+            <span>Do I still earn reward points on my credit card?</span>
+            <i class="fas fa-chevron-down faq-icon transition-transform duration-300 text-emerald-400"></i>
+          </button>
+          <div class="faq-content p-5 pt-0 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-slate-800/60 hidden">
+            Yes! Because the transaction processes as a merchant digital service transaction, your issuing bank awards full reward points, milestone points, and airport lounge spend counters.
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden">
+          <button class="faq-header w-full p-5 text-left font-bold text-white flex items-center justify-between gap-4 hover:text-emerald-400 transition-colors">
+            <span>What are the charges and fee rates?</span>
+            <i class="fas fa-chevron-down faq-icon transition-transform duration-300 text-emerald-400"></i>
+          </button>
+          <div class="faq-content p-5 pt-0 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-slate-800/60 hidden">
+            Our transparent fee structure: <strong>RuPay Network — 1.6%</strong>, <strong>Visa (All Cards) — 1.8%</strong>, <strong>Mastercard (All Cards) — 1.8%</strong>, <strong>Corporate Cards — 2.0%</strong>, and <strong>SBI / HDFC / OneCard — 2.0%</strong>. All transfers are instant via IMPS with zero hidden charges and zero cash advance penalty rates.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="bg-slate-950 border-t border-white/10 py-12 text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="space-y-3">
+          <div class="text-xl font-extrabold text-white font-heading"><span class="gradient-text-emerald">VASAVI</span> TRADERS</div>
+          <p class="text-slate-400 leading-relaxed text-xs">
+            Next-generation financial services platform for instant credit card liquidity, bank transfers, and automated card cashouts.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px] font-mono">Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#calculator" class="hover:text-emerald-400">Credit Card Cashout</a></li>
+            <li><a href="#calculator" class="hover:text-emerald-400">Card Fee Calculator</a></li>
+            <li><a href="#how-it-works" class="hover:text-emerald-400">Instant IMPS Settlement</a></li>
+            <li><a href="#supported-banks" class="hover:text-emerald-400">Supported Issuing Banks</a></li>
+            <li><a href="audit.html" class="text-amber-400 hover:text-amber-300 font-medium flex items-center gap-1.5"><i class="fas fa-file-excel text-[10px]"></i> Excel Audit & Matching</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px] font-mono">Security & Policy</h4>
+          <ul class="space-y-2">
+            <li><a href="#security" class="hover:text-emerald-400">PCI-DSS Compliance</a></li>
+            <li><a href="#security" class="hover:text-emerald-400">Privacy Policy</a></li>
+            <li><a href="#security" class="hover:text-emerald-400">Terms of Service</a></li>
+            <li><a href="#security" class="hover:text-emerald-400">Refund Policy</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px] font-mono">Support Desk</h4>
+          <p class="text-xs text-slate-400">24/7 Live Customer Assistance</p>
+          <div class="mt-2 font-mono text-emerald-400 font-bold">support@vasavitraders.com</div>
+          <div class="mt-1 font-mono text-slate-300">Toll Free: 1800-247-VASAVI TRADERS</div>
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 font-mono">
+        <div>© 2026 VASAVI TRADERS Financial Services Platform. All rights reserved.</div>
+        <div class="mt-2 sm:mt-0 flex gap-4">
+          <span>PCI-DSS Level 1 Certified</span>
+          <span>•</span>
+          <span>256-Bit SSL Encrypted</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- 4-Step Withdrawal Execution Modal Wizard -->
+  <div id="withdrawal-modal" class="modal-overlay">
+    <div class="modal-content glass-panel p-6 sm:p-8 rounded-3xl border border-emerald-500/30 text-slate-100 relative">
+      
+      <!-- Close Button -->
+      <button id="close-modal-btn" class="absolute top-5 right-5 text-slate-400 hover:text-white text-xl">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <!-- Step Indicators Header -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-3 text-xs font-mono">
+          <span class="text-emerald-400 font-bold">INDEPENDENT CASH WITHDRAWAL WIZARD</span>
+          <span class="text-slate-400">Secure IMPS Routing</span>
+        </div>
+        
+        <div class="flex items-center justify-between gap-2">
+          <div id="step-indicator-1" class="w-8 h-8 rounded-full bg-emerald-500 text-black font-bold flex items-center justify-center text-xs">1</div>
+          <div class="h-0.5 flex-1 bg-slate-800"></div>
+          <div id="step-indicator-2" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 font-bold flex items-center justify-center text-xs">2</div>
+          <div class="h-0.5 flex-1 bg-slate-800"></div>
+          <div id="step-indicator-3" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 font-bold flex items-center justify-center text-xs">3</div>
+          <div class="h-0.5 flex-1 bg-slate-800"></div>
+          <div id="step-indicator-4" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 font-bold flex items-center justify-center text-xs">4</div>
+        </div>
+      </div>
+
+      <!-- Transaction Summary Pill inside Modal -->
+      <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-2xl mb-6 flex items-center justify-between text-xs font-mono">
+        <div>
+          <span class="text-slate-500 block">Gross Amount:</span>
+          <span id="modal-summary-amount" class="text-white font-bold text-sm">₹50,000</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block">Net Payout:</span>
+          <span id="modal-summary-payout" class="text-emerald-400 font-bold text-sm">₹49,405</span>
+        </div>
+        <div class="text-right">
+          <span class="text-slate-500 block">Card Type:</span>
+          <span id="modal-summary-card" class="text-slate-300 font-bold">Visa Signature</span>
+        </div>
+      </div>
+
+      <!-- STEP 1: CARD DETAILS -->
+      <div id="wizard-step-1" class="space-y-4">
+        <h3 class="text-lg font-bold text-white">Step 1: Credit Card Information</h3>
+        <form id="wizard-step1-form" class="space-y-4">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Cardholder Full Name</label>
+            <input type="text" required placeholder="RAHUL SHARMA" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-emerald-400 font-mono">
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">16-Digit Credit Card Number</label>
+            <div class="relative">
+              <input type="text" id="card-number-input" maxlength="19" required placeholder="4532 8900 1234 5678" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-emerald-400 font-mono tracking-widest">
+              <div id="preview-card-logo" class="absolute right-3 top-2.5 text-slate-400 text-sm">
+                <i class="fas fa-credit-card"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Expiry Date (MM/YY)</label>
+              <input type="text" required placeholder="08/29" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-emerald-400 font-mono text-center">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">CVV Security Code</label>
+              <input type="password" required placeholder="•••" maxlength="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-emerald-400 font-mono text-center">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/25 hover:bg-emerald-400 transition-all flex items-center justify-center gap-2">
+            <span>Verify Card & Continue</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 2: BANK DESTINATION SETUP -->
+      <div id="wizard-step-2" class="space-y-4 hidden">
+        <h3 class="text-lg font-bold text-white">Step 2: Destination Bank Account</h3>
+        <p class="text-xs text-slate-400">Provide bank account or UPI ID where instant payout will be credited.</p>
+        
+        <form id="wizard-step2-form" class="space-y-4">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Receiving Bank Name</label>
+            <select required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-emerald-400">
+              <option value="hdfc">HDFC Bank</option>
+              <option value="sbi">State Bank of India (SBI)</option>
+              <option value="icici">ICICI Bank</option>
+              <option value="axis">Axis Bank</option>
+              <option value="kotak">Kotak Mahindra Bank</option>
+              <option value="chase">JPMorgan Chase Bank</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Account Number or UPI ID</label>
+            <input type="text" required placeholder="50100234901238 or mobile@upi" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-emerald-400 font-mono">
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">IFSC Code (for Bank Account)</label>
+            <input type="text" placeholder="HDFC0001234" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-emerald-400 font-mono uppercase">
+          </div>
+
+          <button type="submit" id="btn-step2-proceed" class="w-full py-3.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/25 hover:bg-emerald-400 transition-all flex items-center justify-center gap-2">
+            <span>Verify Account & Proceed to 2FA</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 3: 2FA OTP VERIFICATION -->
+      <div id="wizard-step-3" class="space-y-4 hidden">
+        <h3 class="text-lg font-bold text-white">Step 3: 3D-Secure 2FA OTP Authentication</h3>
+        <p class="text-xs text-slate-400">Enter the 6-digit OTP sent by your credit card issuing bank to authorize charge.</p>
+        
+        <form id="wizard-step3-form" class="space-y-4">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1 text-center">6-Digit Security OTP</label>
+            <input type="text" id="otp-input" maxlength="6" required placeholder="8 4 9 2 0 4" class="w-full bg-slate-900 border border-emerald-500/50 rounded-xl px-4 py-3 text-center text-xl tracking-widest text-emerald-400 font-mono font-bold outline-none focus:border-emerald-400">
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-slate-400 font-mono">
+            <span>Resend OTP in: <span id="otp-timer" class="text-emerald-400 font-bold">30s</span></span>
+            <button type="button" onclick="fillDemoOTP()" class="text-cyan-400 underline font-bold">Auto-Fill Demo OTP</button>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/25 hover:bg-emerald-400 transition-all flex items-center justify-center gap-2">
+            <span>Authorize Cashout & Transfer</span>
+            <i class="fas fa-lock"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 4: REAL-TIME PAYOUT TRACKER -->
+      <div id="wizard-step-4" class="space-y-6 hidden text-center">
+        <div>
+          <div id="payout-status-badge" class="px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-400 font-bold text-xs uppercase tracking-wider inline-flex items-center gap-2">
+            <i class="fas fa-spinner fa-spin"></i> INITIALIZING IMPS BANK DISPATCH
+          </div>
+          <h3 class="text-xl font-bold text-white mt-3">Live Payout Status Tracker</h3>
+          <p class="text-xs text-slate-400 font-mono mt-1">Ref ID: <span id="payout-ref-num" class="text-emerald-400 font-bold">TXN-84920194</span></p>
+        </div>
+
+        <!-- Animated Progress Steps -->
+        <div class="relative py-4">
+          <div class="absolute top-1/2 left-0 right-0 h-1 bg-slate-800 -translate-y-1/2 -z-10"></div>
+          <div id="payout-progress-bar" class="absolute top-1/2 left-0 h-1 bg-emerald-500 -translate-y-1/2 -z-10 transition-all duration-700" style="width: 10%;"></div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col items-center gap-2">
+              <div id="payout-step-1" class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-xs">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <span class="text-[10px] font-mono text-slate-300">Card Charged</span>
+            </div>
+
+            <div class="flex flex-col items-center gap-2">
+              <div id="payout-step-2" class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-xs">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <span class="text-[10px] font-mono text-slate-300">Fraud Check</span>
+            </div>
+
+            <div class="flex flex-col items-center gap-2">
+              <div id="payout-step-3" class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-xs">
+                <i class="fas fa-university"></i>
+              </div>
+              <span class="text-[10px] font-mono text-slate-300">Bank Deposited</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="payout-done-actions" class="pt-4 space-y-3 hidden">
+          <button onclick="closeWithdrawalModal()" class="w-full py-3.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/25">
+            Done / Close Window
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Floating Chatbot Assistant Widget -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <button id="chat-toggle-btn" class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 font-bold flex items-center justify-center shadow-2xl shadow-emerald-500/40 hover:scale-110 transition-transform">
+      <i class="fas fa-comment-dots text-xl"></i>
+    </button>
+
+    <!-- Chat Box Window -->
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 glass-panel rounded-2xl border border-emerald-500/30 overflow-hidden shadow-2xl">
+      <div class="bg-slate-900 p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="pulse-dot"></span>
+          <div>
+            <h4 class="text-sm font-bold text-white">VASAVI TRADERS Instant Support</h4>
+            <span class="text-[10px] text-emerald-400 font-mono">Online • 24/7 Cashout Desk</span>
+          </div>
+        </div>
+        <button id="chat-close-btn" class="text-slate-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div id="chat-messages" class="p-4 h-64 overflow-y-auto space-y-3 text-xs">
+        <div class="flex justify-start">
+          <div class="bg-slate-800 text-slate-200 border border-slate-700 px-3.5 py-2 rounded-2xl rounded-tl-none text-xs max-w-[85%]">
+            Hello! Welcome to VASAVI TRADERS Financial Services. Have questions about withdrawing cash from your credit card or fee rates? Ask me anytime!
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-900 border-t border-slate-800 flex gap-2">
+        <input type="text" id="chat-input" placeholder="Type your question..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-400">
+        <button id="chat-send-btn" class="px-3 py-2 bg-emerald-500 text-slate-950 rounded-xl font-bold text-xs">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 left-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

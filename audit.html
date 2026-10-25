@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VASAVI TRADERS — Audit & Transaction Reconciliation Portal</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SheetJS for Excel (.xlsx/.xls) and CSV parsing & writing -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            emerald: {
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+            },
+            slate: {
+              950: '#020617',
+              900: '#0f172a',
+              850: '#111e38',
+              800: '#1e293b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #030712;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-emerald {
+      background: rgba(6, 78, 59, 0.2);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #34d399 0%, #2dd4bf 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-300">
+
+  <!-- ================= PASSCODE MODAL SCREEN ================= -->
+  <div id="passcode-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-xl transition-all duration-300">
+    <div class="max-w-md w-full mx-4 p-8 glass-card rounded-3xl border border-emerald-500/30 shadow-2xl shadow-emerald-500/10 text-center relative overflow-hidden">
+      <div class="absolute -top-24 -left-24 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center mx-auto mb-5 text-emerald-400 text-2xl shadow-inner">
+        <i class="fas fa-shield-halved"></i>
+      </div>
+
+      <span class="text-xs uppercase tracking-widest text-emerald-400 font-mono font-bold">VASAVI TRADERS INTERNAL</span>
+      <h2 class="text-2xl font-extrabold text-white mt-1">Audit & Reconciliation</h2>
+      <p class="text-slate-400 text-xs mt-2">Enter your authorized auditor PIN to access settlement matching & amount audits.</p>
+
+      <div class="mt-6 space-y-4">
+        <div class="relative">
+          <input 
+            type="password" 
+            id="audit-pin-input" 
+            maxlength="6" 
+            placeholder="••••"
+            class="w-full text-center tracking-[0.5em] text-2xl font-mono py-3.5 px-4 bg-slate-900/90 border border-slate-700 focus:border-emerald-400 rounded-xl outline-none text-emerald-400 placeholder:text-slate-600 transition-all shadow-inner"
+            onkeydown="if(event.key==='Enter') verifyPasscode()"
+            autofocus
+          >
+        </div>
+
+        <div id="pin-error-msg" class="text-xs text-rose-400 font-mono hidden flex items-center justify-center gap-1.5">
+          <i class="fas fa-triangle-exclamation"></i> Invalid Passcode. Try again.
+        </div>
+
+        <button 
+          onclick="verifyPasscode()" 
+          class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-sm tracking-wide shadow-lg shadow-emerald-500/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+        >
+          <i class="fas fa-lock-open text-xs"></i> Unlock Audit Portal
+        </button>
+
+        <div class="pt-2 flex items-center justify-between text-xs text-slate-500">
+          <span>Default PIN: <code class="text-emerald-400 font-mono font-bold">8080</code></span>
+          <a href="index.html" class="hover:text-slate-300 transition-colors">← Exit to Public Site</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAIN AUDIT INTERFACE ================= -->
+  <div id="audit-main" class="hidden min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-white/10 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+        
+        <!-- Left: Brand & Badge -->
+        <div class="flex items-center gap-4">
+          <a href="index.html" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+              <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+                <i class="fas fa-wallet text-emerald-400 text-lg"></i>
+              </div>
+            </div>
+            <div>
+              <span class="text-xl font-extrabold tracking-tight text-white flex items-center gap-1">
+                <span class="text-emerald-400">VASAVI</span> TRADERS
+              </span>
+              <span class="text-[10px] text-slate-400 block tracking-widest uppercase font-mono">Financial Services</span>
+            </div>
+          </a>
+
+          <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>PURE AMOUNT RECONCILIATION ENGINE</span>
+          </div>
+        </div>
+
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-3">
+          <button 
+            onclick="loadDemoData()" 
+            class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+            title="Load Collection History & Product Report demo data"
+          >
+            <i class="fas fa-bolt text-amber-400"></i>
+            <span class="hidden md:inline">Load Demo Data (Portal & Accounting)</span>
+            <span class="md:hidden">Demo Data</span>
+          </button>
+
+          <a 
+            href="index.html" 
+            class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-white/10 text-xs font-medium transition-all flex items-center gap-1.5"
+          >
+            <i class="fas fa-external-link-alt text-xs text-slate-400"></i>
+            <span class="hidden sm:inline">Main Website</span>
+          </a>
+
+          <button 
+            onclick="lockPortal()" 
+            class="p-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-medium transition-all"
+            title="Lock Portal"
+          >
+            <i class="fas fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Subheader with Title & Description -->
+    <div class="bg-slate-900/60 border-b border-white/5 py-4">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-white">
+            Amount-Wise <span class="gradient-text">Transaction Reconciliation</span>
+          </h1>
+          <p class="text-xs text-slate-400 mt-0.5">Reconcile Portal Data (Collection History / Nexbook) against Accounting Data (Product Report / Nex Level) purely by individual transaction amounts & duplicate frequencies.</p>
+        </div>
+
+        <!-- Mode Tabs -->
+        <div class="flex items-center bg-slate-950 p-1.5 rounded-2xl border border-white/10 shrink-0 flex-wrap gap-1">
+          <button 
+            id="tab-recon-btn" 
+            onclick="switchTab('recon')"
+            class="px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/30"
+          >
+            <i class="fas fa-arrows-split-up-and-left"></i>
+            <span>Amount Reconciliation</span>
+          </button>
+          <button 
+            id="tab-admin-btn" 
+            onclick="switchTab('admin')"
+            class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2"
+          >
+            <i class="fas fa-calendar-check text-amber-400"></i>
+            <span>Daily Admin Grand Audit (22nd vs 23rd Sheet)</span>
+            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/30">NEW</span>
+          </button>
+          <button 
+            id="tab-fee-btn" 
+            onclick="switchTab('fee')"
+            class="px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-2"
+          >
+            <i class="fas fa-percent"></i>
+            <span>Fee Compliance</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+      <!-- ================= SECTION 1: TWO-FILE AMOUNT RECONCILIATION ================= -->
+      <div id="section-recon" class="space-y-8">
+
+        <!-- Upload Mode Switcher (1 Audit Sheet vs 2 Separate Files) -->
+        <div class="glass-card p-2.5 rounded-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border border-emerald-500/30 bg-slate-900/90 shadow-xl">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-extrabold text-slate-300 uppercase tracking-wider pl-2 flex items-center gap-1.5">
+              <i class="fas fa-sliders text-emerald-400"></i> Mode:
+            </span>
+            <div class="inline-flex rounded-xl bg-slate-950 p-1 border border-white/10">
+              <button 
+                id="mode-single-sheet-btn" 
+                onclick="switchUploadMode('single')" 
+                class="px-4 py-2 rounded-lg text-xs font-extrabold transition-all flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 shadow-md shadow-emerald-500/25"
+              >
+                <i class="fas fa-file-excel"></i>
+                <span>1 AUDIT SHEET OPTION (Single Excel)</span>
+                <span class="text-[9px] bg-slate-950/40 text-slate-950 font-black px-1.5 py-0.5 rounded-full uppercase">Active</span>
+              </button>
+              <button 
+                id="mode-two-files-btn" 
+                onclick="switchUploadMode('dual')" 
+                class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i>
+                <span>2 Separate Files (Portal & Accounting)</span>
+              </button>
+            </div>
+          </div>
+          <div class="text-xs text-teal-300 font-mono px-3 py-1.5 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center gap-2">
+            <i class="fas fa-circle-check text-emerald-400"></i>
+            <span id="upload-mode-hint">Upload 1 file with Sheet 1 & Sheet 2 (e.g. AVPMS 1 Oct 2026.xlsx) or columns</span>
+          </div>
+        </div>
+
+        <!-- ================= CONTAINER A: 1 AUDIT SHEET OPTION ================= -->
+        <div id="upload-container-single" class="space-y-4">
+          <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6 relative border-l-4 border-l-emerald-400 shadow-2xl">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-2xl shadow-inner">
+                  <i class="fas fa-file-excel"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
+                    1 AUDIT SHEET / WORKBOOK RECONCILIATION
+                    <span class="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">1-FILE AUTO AUDIT</span>
+                  </h3>
+                  <p class="text-xs text-slate-300 font-mono">Upload a single Excel workbook (e.g. AVPMS 1 Oct 2026.xlsx) with Sheet 1 & Sheet 2, or a single combined sheet</p>
+                </div>
+              </div>
+              <span id="single-sheet-status-pill" class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                Awaiting 1 Audit Sheet
+              </span>
+            </div>
+
+            <!-- Single Audit Sheet Drag & Drop Zone -->
+            <div 
+              id="dropzone-single-sheet" 
+              class="border-2 border-dashed border-emerald-500/40 hover:border-emerald-400 rounded-2xl p-8 text-center transition-all bg-slate-900/40 hover:bg-emerald-500/5 cursor-pointer relative"
+              onclick="document.getElementById('file-single-sheet-input').click()"
+            >
+              <input type="file" id="file-single-sheet-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleSingleAuditSheetFile(this.files[0])">
+              <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center mx-auto text-emerald-400 text-3xl mb-3 shadow-inner">
+                <i class="fas fa-file-import"></i>
+              </div>
+              <p class="text-base font-extrabold text-slate-100">Click or drag & drop your 1 Audit Sheet / Workbook</p>
+              <p class="text-xs text-slate-400 mt-1 max-w-xl mx-auto">
+                Supports Excel files (<code class="text-emerald-300 font-mono font-bold">.xlsx</code>, <code class="text-teal-300 font-mono font-bold">.xls</code>) with multiple sheets (<span class="text-cyan-300 font-semibold">Sheet 1: Portal / Collection</span> + <span class="text-emerald-300 font-semibold">Sheet 2: Accounting / Bank Payout</span>) or 1 sheet with side-by-side amount columns.
+              </p>
+              
+              <!-- Loaded File Info Badge -->
+              <div id="single-sheet-file-info" class="hidden mt-4 text-xs font-mono text-emerald-300 bg-emerald-950/80 py-2 px-4 rounded-xl border border-emerald-500/40 inline-flex items-center gap-2 shadow-lg">
+                <i class="fas fa-circle-check text-emerald-400"></i> 
+                <span id="single-sheet-filename" class="font-bold text-white">file.xlsx</span> 
+                <span class="text-slate-400">•</span>
+                <span id="single-sheet-detected-info">2 Sheets Detected</span>
+              </div>
+            </div>
+
+            <!-- Multi-Sheet Configuration Panel (Auto-shown when workbook has multiple sheets) -->
+            <div id="single-sheet-config-panel" class="hidden glass-card p-5 rounded-2xl border border-white/10 bg-slate-950/60 space-y-4">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
+                  <i class="fas fa-table-list text-cyan-400"></i> Workbook Sheets Configuration
+                </h4>
+                <span class="text-[11px] text-slate-400 font-mono">Auto-mapped from your workbook</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Portal Sheet Selector -->
+                <div class="p-3.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <label class="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                      <i class="fas fa-file-invoice text-cyan-400"></i> Sheet for Portal Data (Collection / Nexbook):
+                    </label>
+                    <span id="single-sheet-portal-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">0 txns</span>
+                  </div>
+                  <select id="single-sheet-portal-select" onchange="onSingleSheetMappingChange()" class="w-full bg-slate-950 text-white border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono focus:border-cyan-400 focus:outline-none">
+                  </select>
+                </div>
+
+                <!-- Accounting Sheet Selector -->
+                <div class="p-3.5 rounded-xl bg-slate-900/80 border border-emerald-500/30 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <label class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                      <i class="fas fa-building-columns text-emerald-400"></i> Sheet for Accounting Data (Product / Bank):
+                    </label>
+                    <span id="single-sheet-acct-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">0 txns</span>
+                  </div>
+                  <select id="single-sheet-acct-select" onchange="onSingleSheetMappingChange()" class="w-full bg-slate-950 text-white border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono focus:border-emerald-400 focus:outline-none">
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Single Sheet Column Mapping Panel (Auto-shown when workbook has 1 sheet or CSV) -->
+            <div id="single-sheet-columns-panel" class="hidden glass-card p-5 rounded-2xl border border-white/10 bg-slate-950/60 space-y-4">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
+                  <i class="fas fa-columns text-teal-400"></i> Column Mapping (Single Sheet)
+                </h4>
+                <span class="text-[11px] text-slate-400 font-mono">Select amount columns</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Portal Amount Column -->
+                <div class="p-3.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 space-y-2">
+                  <label class="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                    <i class="fas fa-calculator text-cyan-400"></i> Portal Amount Column:
+                  </label>
+                  <select id="single-col-portal-select" onchange="onSingleColumnMappingChange()" class="w-full bg-slate-950 text-white border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono focus:border-cyan-400 focus:outline-none">
+                  </select>
+                </div>
+
+                <!-- Accounting Amount Column -->
+                <div class="p-3.5 rounded-xl bg-slate-900/80 border border-emerald-500/30 space-y-2">
+                  <label class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                    <i class="fas fa-calculator text-emerald-400"></i> Accounting Amount Column:
+                  </label>
+                  <select id="single-col-acct-select" onchange="onSingleColumnMappingChange()" class="w-full bg-slate-950 text-white border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono focus:border-emerald-400 focus:outline-none">
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Template & Demo Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-white/5 text-xs text-slate-400">
+              <div class="flex items-center gap-2">
+                <span>Quick Test:</span>
+                <button onclick="loadDemoSingleSheetData()" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold transition-all inline-flex items-center gap-1.5">
+                  <i class="fas fa-bolt text-amber-400"></i> Load Demo 1-Sheet Audit
+                </button>
+              </div>
+              <button onclick="downloadSampleSingleSheetTemplate()" class="text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1">
+                <i class="fas fa-download text-[10px]"></i> Download 1-Sheet Excel Template (.xlsx)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= CONTAINER B: 2 SEPARATE FILES ================= -->
+        <div id="upload-container-dual" class="grid grid-cols-1 lg:grid-cols-2 gap-6 hidden">
+
+          <!-- Card 1: Portal Data (Collection History / Nexbook) -->
+          <div class="glass-card p-6 rounded-3xl space-y-4 relative border-l-4 border-l-cyan-400">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
+                  <i class="fas fa-file-invoice"></i>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-white">FILE 1 – PORTAL DATA</h3>
+                  <p class="text-xs text-slate-300 font-mono">Collection History / Nexbook Data</p>
+                </div>
+              </div>
+              <span id="gateway-status-pill" class="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                Awaiting Portal File
+              </span>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div 
+              id="dropzone-gateway" 
+              class="border-2 border-dashed border-slate-700 hover:border-cyan-400/60 rounded-2xl p-6 text-center transition-all bg-slate-900/40 hover:bg-cyan-500/5 cursor-pointer relative"
+              onclick="document.getElementById('file-gateway-input').click()"
+            >
+              <input type="file" id="file-gateway-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleGatewayFile(this.files[0])">
+              <i class="fas fa-file-excel text-3xl text-cyan-400/80 mb-2"></i>
+              <p class="text-sm font-bold text-slate-200">Click or drag & drop Portal Data / Collection History</p>
+              <p class="text-xs text-slate-400 mt-1">Parses transaction amounts (<code class="text-cyan-300 font-mono">Amount</code>, <code class="text-rose-300 font-mono">Debit</code>, <code class="text-emerald-300 font-mono">Credit</code>)</p>
+              <div id="gateway-file-info" class="hidden mt-3 text-xs font-mono text-cyan-300 bg-cyan-950/60 py-1.5 px-3 rounded-lg border border-cyan-500/30 inline-flex items-center gap-2">
+                <i class="fas fa-check-circle"></i> <span id="gateway-filename">portal_data.csv</span> (<span id="gateway-rowcount">0 rows</span>)
+              </div>
+            </div>
+
+            <!-- Quick Template Download -->
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+              <span>Need sample format?</span>
+              <button onclick="downloadSampleGatewayTemplate()" class="text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1">
+                <i class="fas fa-download text-[10px]"></i> Download Sample Portal CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2: Accounting Data (Product Report / Nex Level) -->
+          <div class="glass-card p-6 rounded-3xl space-y-4 relative border-l-4 border-l-emerald-400">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
+                  <i class="fas fa-building-columns"></i>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-white">FILE 2 – ACCOUNTING DATA</h3>
+                  <p class="text-xs text-slate-300 font-mono">Product Report / Nex Level Transactions</p>
+                </div>
+              </div>
+              <span id="bank-status-pill" class="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                Awaiting Accounting File
+              </span>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div 
+              id="dropzone-bank" 
+              class="border-2 border-dashed border-slate-700 hover:border-emerald-400/60 rounded-2xl p-6 text-center transition-all bg-slate-900/40 hover:bg-emerald-500/5 cursor-pointer relative"
+              onclick="document.getElementById('file-bank-input').click()"
+            >
+              <input type="file" id="file-bank-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleBankFile(this.files[0])">
+              <i class="fas fa-file-invoice-dollar text-3xl text-emerald-400/80 mb-2"></i>
+              <p class="text-sm font-bold text-slate-200">Click or drag & drop Accounting Data / Product Report</p>
+              <p class="text-xs text-slate-500 mt-1">Parses <code class="text-emerald-300 font-mono">Debit</code>, <code class="text-cyan-300 font-mono">Credit</code>, or <code class="text-amber-300 font-mono">Amount</code></p>
+              <div id="bank-file-info" class="hidden mt-3 text-xs font-mono text-emerald-300 bg-emerald-950/60 py-1.5 px-3 rounded-lg border border-emerald-500/30 inline-flex items-center gap-2">
+                <i class="fas fa-check-circle"></i> <span id="bank-filename">accounting_data.xlsx</span> (<span id="bank-rowcount">0 rows</span>)
+              </div>
+            </div>
+
+            <!-- Quick Template Download -->
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/5">
+              <span>Need sample format?</span>
+              <button onclick="downloadSampleBankTemplate()" class="text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center gap-1">
+                <i class="fas fa-download text-[10px]"></i> Download Sample Accounting Excel
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Matching Rules Banner & Run Button -->
+        <div class="glass-card-emerald p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 text-xl shrink-0">
+              <i class="fas fa-scale-balanced"></i>
+            </div>
+            <div>
+              <h4 class="text-base font-extrabold text-white">Pure Amount-Frequency Matching Engine</h4>
+              <p class="text-xs text-slate-300 mt-0.5">
+                Matches individual transaction amounts and duplicate frequencies 1-to-1.
+                <span class="ml-2 text-emerald-400 font-bold font-mono bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40">✨ 0 Paisa to 1 Rupee (≤ ₹1.00) = FULLY MATCHED</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <button 
+              id="start-recon-btn" 
+              onclick="executeReconciliation()" 
+              class="flex-1 md:flex-none px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 hover:from-emerald-300 hover:to-cyan-300 text-slate-950 font-extrabold text-sm shadow-xl shadow-emerald-500/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+            >
+              <i class="fas fa-play"></i> Reconcile Amounts
+            </button>
+            <button 
+              onclick="resetReconciliation()" 
+              class="px-4 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold transition-all"
+              title="Reset files & filters"
+            >
+              <i class="fas fa-rotate-right"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= RECON RESULTS CONTAINER ================= -->
+        <div id="recon-results-wrapper" class="space-y-6 hidden">
+
+          <!-- 1. Executive Summary KPI Cards (9 KPI Grid) -->
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
+            
+            <!-- 1. Total Portal Transactions -->
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-cyan-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Portal Transactions</span>
+              <span id="kpi-portal-count" class="text-lg sm:text-xl font-extrabold text-white font-mono mt-1 block">0</span>
+              <span id="kpi-portal-amount" class="text-[11px] text-cyan-300 font-mono font-bold">₹0.00</span>
+            </div>
+
+            <!-- 2. Total Accounting Transactions -->
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-emerald-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Accounting Transactions</span>
+              <span id="kpi-accounting-count" class="text-lg sm:text-xl font-extrabold text-white font-mono mt-1 block">0</span>
+              <span id="kpi-accounting-amount" class="text-[11px] text-emerald-300 font-mono font-bold">₹0.00</span>
+            </div>
+
+            <!-- 3. Matched Transactions & Volume -->
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-teal-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Matched Transactions</span>
+              <span id="kpi-matched-count" class="text-lg sm:text-xl font-extrabold text-teal-300 font-mono mt-1 block">0</span>
+              <span id="kpi-matched-amount" class="text-[11px] text-teal-400/90 font-mono font-bold">₹0.00 settled</span>
+            </div>
+
+            <!-- 4. Missing in Accounting -->
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-rose-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Missing in Accounting</span>
+              <span id="kpi-missing-acc-count" class="text-lg sm:text-xl font-extrabold text-rose-400 font-mono mt-1 block">0</span>
+              <span id="kpi-missing-acc-amount" class="text-[11px] text-rose-300 font-mono font-bold">₹0.00</span>
+            </div>
+
+            <!-- 5. Overall Amount Difference -->
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-amber-400 col-span-2 md:col-span-4 lg:col-span-1">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Overall Difference</span>
+              <span id="kpi-diff-amount" class="text-lg sm:text-xl font-extrabold text-amber-400 font-mono mt-1 block">₹0.00</span>
+              <span id="kpi-review-count" class="text-[11px] text-amber-300/80 font-mono">0 require review</span>
+            </div>
+
+          </div>
+
+          <!-- View Mode Switcher Banner -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/80 p-3 rounded-2xl border border-white/10">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400 font-semibold">Table Display Mode:</span>
+              <div class="inline-flex rounded-xl bg-slate-950 p-1 border border-white/5">
+                <button 
+                  id="view-mode-separate-btn" 
+                  onclick="switchReconViewMode('separate')" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20"
+                >
+                  <i class="fas fa-list-check"></i>
+                  <span>Separate Individual Transactions (Recommended)</span>
+                </button>
+                <button 
+                  id="view-mode-grouped-btn" 
+                  onclick="switchReconViewMode('grouped')" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5"
+                >
+                  <i class="fas fa-layer-group"></i>
+                  <span>Grouped by Amount Summary</span>
+                </button>
+              </div>
+            </div>
+            <div class="text-[11px] text-teal-300 font-mono flex items-center gap-1.5">
+              <i class="fas fa-circle-info"></i> Every transaction listed separately for individual manual approval
+            </div>
+          </div>
+
+          <!-- Controls: View Switcher, Filter Pills & Export -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            
+            <!-- Filter Pills -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              <button onclick="filterAmountReconTable('ALL')" id="filter-pill-ALL" class="recon-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-500 text-slate-950">
+                All Amounts (<span id="count-all">0</span>)
+              </button>
+              <button onclick="filterAmountReconTable('FULLY_MATCHED')" id="filter-pill-FULLY_MATCHED" class="recon-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800">
+                Fully Matched (<span id="count-matched">0</span>)
+              </button>
+              <button onclick="filterAmountReconTable('MANUALLY_APPROVED')" id="filter-pill-MANUALLY_APPROVED" class="recon-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-900 hover:bg-slate-800 text-teal-300 border border-slate-800">
+                <i class="fas fa-stamp text-[10px]"></i> Approved (<span id="count-approved">0</span>)
+              </button>
+              <button onclick="filterAmountReconTable('PARTIALLY_MATCHED')" id="filter-pill-PARTIALLY_MATCHED" class="recon-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-900 hover:bg-slate-800 text-amber-400 border border-slate-800">
+                Partially Matched (<span id="count-partial">0</span>)
+              </button>
+              <button onclick="filterAmountReconTable('MISSING_IN_ACCOUNTING')" id="filter-pill-MISSING_IN_ACCOUNTING" class="recon-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-900 hover:bg-slate-800 text-rose-400 border border-slate-800">
+                Missing Accounting (<span id="count-missing-acc">0</span>)
+              </button>
+              <button onclick="filterAmountReconTable('MISSING_IN_PORTAL')" id="filter-pill-MISSING_IN_PORTAL" class="recon-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-900 hover:bg-slate-800 text-purple-400 border border-slate-800">
+                Missing Portal (<span id="count-missing-portal">0</span>)
+              </button>
+            </div>
+
+            <!-- Search & Export -->
+            <div class="flex items-center gap-2">
+              <div class="relative flex-1 sm:w-56">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                <input 
+                  type="text" 
+                  id="recon-search-input" 
+                  placeholder="Search Amount or Status..." 
+                  oninput="handleReconSearch(this.value)"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-emerald-400 transition-all font-mono"
+                >
+              </div>
+
+              <!-- Bulk Approve Button -->
+              <button 
+                id="bulk-approve-btn" 
+                onclick="openBulkApprovalModal()" 
+                class="hidden px-3 py-2 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 shadow-lg shadow-teal-500/10"
+                title="Bulk Approve Selected Amounts"
+              >
+                <i class="fas fa-stamp"></i> Bulk Approve (<span id="bulk-selected-count">0</span>)
+              </button>
+
+              <!-- Export Buttons -->
+              <button 
+                onclick="exportAmountReconciliationReport('xlsx')" 
+                class="px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all flex items-center gap-1.5 shrink-0"
+                title="Export Amount Reconciliation Report to Excel (.xlsx)"
+              >
+                <i class="fas fa-file-excel"></i> Export Excel
+              </button>
+              <button 
+                onclick="exportAmountReconciliationReport('csv')" 
+                class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-medium transition-all flex items-center gap-1.5 shrink-0"
+                title="Export CSV"
+              >
+                <i class="fas fa-file-csv"></i> CSV
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Amount-Wise Reconciliation Table -->
+          <div class="glass-card rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-900/90 text-slate-400 font-mono uppercase text-[11px] border-b border-white/10">
+                  <tr>
+                    <th class="py-3.5 px-3 font-semibold text-center w-10">
+                      <input type="checkbox" id="select-all-recon-checkbox" onchange="toggleSelectAllRecon(this.checked)" class="rounded bg-slate-950 border-slate-700 text-teal-500 focus:ring-0 cursor-pointer" title="Select All">
+                    </th>
+                    <th class="py-3.5 px-4 font-semibold text-right">Amount (INR)</th>
+                    <th class="py-3.5 px-4 font-semibold text-center">Portal Count</th>
+                    <th class="py-3.5 px-4 font-semibold text-center">Accounting Count</th>
+                    <th class="py-3.5 px-4 font-semibold text-center">Matched Count</th>
+                    <th class="py-3.5 px-4 font-semibold text-right">Portal Total</th>
+                    <th class="py-3.5 px-4 font-semibold text-right">Accounting Total</th>
+                    <th class="py-3.5 px-4 font-semibold text-right">Difference</th>
+                    <th class="py-3.5 px-4 font-semibold text-center">Status</th>
+                    <th class="py-3.5 px-4 font-semibold text-center">Manual Action</th>
+                  </tr>
+                </thead>
+                <tbody id="amount-recon-table-body" class="divide-y divide-white/5 font-mono">
+                  <!-- Populated dynamically by JS -->
+                </tbody>
+                <!-- Table Footer Summary Row -->
+                <tfoot id="amount-recon-table-foot" class="bg-slate-900/90 text-white font-mono font-bold border-t border-white/10">
+                  <!-- Populated by JS -->
+                </tfoot>
+              </table>
+            </div>
+
+            <!-- Table Footer Count & Summary Statement -->
+            <div class="p-4 bg-slate-950/60 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+              <span id="recon-table-count">Showing 0 unique amounts</span>
+              <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5">
+                <i class="fas fa-shield-check"></i> Pure Amount-Frequency Reconciliation Standard
+              </span>
+            </div>
+          </div>
+
+          <!-- Final Conclusion Banner Card -->
+          <div class="glass-card-emerald p-6 rounded-3xl border border-emerald-500/30 space-y-3">
+            <h4 class="text-sm font-extrabold text-white flex items-center gap-2">
+              <i class="fas fa-clipboard-check text-emerald-400"></i>
+              <span>FINAL RECONCILIATION VERIFICATION CONCLUSION</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-1 text-xs font-mono">
+              <div class="bg-slate-950/80 p-3 rounded-xl border border-white/5">
+                <span class="text-[10px] text-slate-400 block uppercase">Portal Total Amount</span>
+                <span id="conc-portal-amount" class="text-sm font-extrabold text-cyan-300 block mt-0.5">₹0.00</span>
+              </div>
+              <div class="bg-slate-950/80 p-3 rounded-xl border border-white/5">
+                <span class="text-[10px] text-slate-400 block uppercase">Accounting Total Amount</span>
+                <span id="conc-acc-amount" class="text-sm font-extrabold text-emerald-300 block mt-0.5">₹0.00</span>
+              </div>
+              <div class="bg-slate-950/80 p-3 rounded-xl border border-white/5">
+                <span class="text-[10px] text-slate-400 block uppercase">Amount Difference</span>
+                <span id="conc-diff-amount" class="text-sm font-extrabold text-amber-300 block mt-0.5">₹0.00</span>
+              </div>
+              <div class="bg-slate-950/80 p-3 rounded-xl border border-white/5">
+                <span class="text-[10px] text-slate-400 block uppercase">Total Matched Txns</span>
+                <span id="conc-matched-txns" class="text-sm font-extrabold text-teal-300 block mt-0.5">0</span>
+              </div>
+              <div class="bg-slate-950/80 p-3 rounded-xl border border-white/5">
+                <span class="text-[10px] text-slate-400 block uppercase">Requiring Review</span>
+                <span id="conc-review-txns" class="text-sm font-extrabold text-rose-300 block mt-0.5">0</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= SECTION: DAILY ADMIN GRAND AUDIT (DAY-OVER-DAY SHEET) ================= -->
+      <div id="section-admin" class="space-y-8 hidden">
+
+        <!-- Top Header & Action Controls -->
+        <div class="glass-card p-6 rounded-3xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-l-4 border-l-amber-400 shadow-2xl">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400 text-2xl shadow-inner shrink-0">
+              <i class="fas fa-table-columns"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-extrabold text-white flex items-center gap-2 flex-wrap">
+                DAILY ADMIN GRAND AUDIT SHEET
+                <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  DAY-OVER-DAY BALANCE VARIANCE
+                </span>
+              </h2>
+              <p class="text-xs text-slate-300 mt-1">
+                Side-by-side audit of <strong class="text-white">22-10-2026</strong> vs <strong class="text-white">23-10-2026</strong> Carry Forward balances across Products, QRs, POS Collections & Payouts.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap w-full lg:w-auto">
+            <button 
+              onclick="downloadDailyAdminExcel()" 
+              class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 text-xs font-extrabold shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2"
+            >
+              <i class="fas fa-file-excel"></i>
+              <span>Download Excel Sheet (.xlsx)</span>
+            </button>
+            <a 
+              href="#admin-variance-section" 
+              class="px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold transition-all flex items-center gap-2"
+            >
+              <i class="fas fa-chart-line text-cyan-400"></i>
+              <span>View Variance Analysis</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- KPI Cards: Carry Forward & Net Shifts -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
+          <!-- 1. 22-Oct Net Balance -->
+          <div class="glass-card p-4 rounded-2xl border-t-2 border-t-cyan-400">
+            <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">22-Oct Net Carry Forward</span>
+            <span class="text-lg sm:text-xl font-extrabold text-white font-mono mt-1 block">₹6,698,266.00</span>
+            <span class="text-[10px] text-cyan-300 font-mono mt-0.5 block">Payin: ₹8.00M | Out: ₹1.30M</span>
+          </div>
+
+          <!-- 2. 23-Oct Net Balance -->
+          <div class="glass-card p-4 rounded-2xl border-t-2 border-t-emerald-400">
+            <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">23-Oct Net Carry Forward</span>
+            <span class="text-lg sm:text-xl font-extrabold text-white font-mono mt-1 block">₹6,821,911.00</span>
+            <span class="text-[10px] text-emerald-300 font-mono mt-0.5 block">Payin: ₹8.58M | Out: ₹1.76M</span>
+          </div>
+
+          <!-- 3. Net Day-over-Day Shift -->
+          <div class="glass-card p-4 rounded-2xl border-t-2 border-t-amber-400 bg-amber-500/5">
+            <span class="text-[10px] font-mono uppercase text-amber-300 block tracking-wider">Net Carry Forward Shift</span>
+            <span class="text-lg sm:text-xl font-extrabold text-amber-400 font-mono mt-1 block">+₹123,645.00</span>
+            <span class="text-[10px] text-emerald-400 font-bold font-mono mt-0.5 block">▲ +1.85% Growth</span>
+          </div>
+
+          <!-- 4. Pay In Collection Growth -->
+          <div class="glass-card p-4 rounded-2xl border-t-2 border-t-teal-400">
+            <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Collection Payin Growth</span>
+            <span class="text-lg sm:text-xl font-extrabold text-teal-300 font-mono mt-1 block">+₹578,645.00</span>
+            <span class="text-[10px] text-slate-400 font-mono mt-0.5 block">24 to 25 active sources</span>
+          </div>
+
+          <!-- 5. Payout Disbursals Growth -->
+          <div class="glass-card p-4 rounded-2xl border-t-2 border-t-rose-400">
+            <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Payout Disbursals Growth</span>
+            <span class="text-lg sm:text-xl font-extrabold text-rose-400 font-mono mt-1 block">+₹455,000.00</span>
+            <span class="text-[10px] text-slate-400 font-mono mt-0.5 block">₹1,308,000 → ₹1,763,000</span>
+          </div>
+        </div>
+
+        <!-- ================= SIDE-BY-SIDE GRAND AUDIT SPREADSHEET VIEW ================= -->
+        <div class="glass-card p-6 rounded-3xl space-y-4 overflow-hidden shadow-2xl border border-white/10">
+          <div class="flex items-center justify-between pb-2 border-b border-white/5 flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-extrabold text-white flex items-center gap-1.5">
+                <i class="fas fa-file-excel text-emerald-400"></i> Side-by-Side Grand Audit Sheet
+              </span>
+              <span class="text-xs text-slate-400 font-mono">(Exact replica of reference Excel spreadsheet)</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-mono">
+              <span class="inline-flex items-center gap-1 text-sky-300"><span class="w-3 h-3 rounded bg-blue-300 inline-block"></span> Products</span>
+              <span class="inline-flex items-center gap-1 text-emerald-300"><span class="w-3 h-3 rounded bg-lime-300 inline-block"></span> QRs</span>
+              <span class="inline-flex items-center gap-1 text-amber-300"><span class="w-3 h-3 rounded bg-amber-200 inline-block"></span> POS</span>
+              <span class="inline-flex items-center gap-1 text-rose-300"><span class="w-3 h-3 rounded bg-rose-300 inline-block"></span> Out Payouts</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-slate-700/80">
+            <div id="admin-spreadsheet-table-container">
+              <!-- Rendered via renderDailyAdminSpreadsheet() in audit.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= DAY-OVER-DAY VARIANCE AUDIT SECTION ================= -->
+        <div id="admin-variance-section" class="glass-card p-6 rounded-3xl space-y-5 shadow-2xl border border-white/10">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+            <div>
+              <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+                <i class="fas fa-scale-balanced text-teal-400"></i>
+                Day-over-Day Product Balance Variance Engine
+              </h3>
+              <p class="text-xs text-slate-300 mt-0.5">Audits individual product balance shifts from 22-Oct to 23-Oct and flags increases, drops, and new accounts.</p>
+            </div>
+
+            <!-- Variance Filter Pills -->
+            <div class="flex items-center gap-1.5 bg-slate-950 p-1.5 rounded-2xl border border-white/10 flex-wrap">
+              <button onclick="filterAdminVariance('ALL')" id="admin-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 shadow-md">
+                All (<span id="cnt-var-all">25</span>)
+              </button>
+              <button onclick="filterAdminVariance('INCREASED')" id="admin-filter-inc" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white">
+                Increased (<span id="cnt-var-inc">8</span>)
+              </button>
+              <button onclick="filterAdminVariance('DECREASED')" id="admin-filter-dec" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white">
+                Decreased (<span id="cnt-var-dec">5</span>)
+              </button>
+              <button onclick="filterAdminVariance('BALANCED')" id="admin-filter-bal" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white">
+                Unchanged (<span id="cnt-var-bal">11</span>)
+              </button>
+              <button onclick="filterAdminVariance('NEW')" id="admin-filter-new" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white">
+                New (<span id="cnt-var-new">1</span>)
+              </button>
+            </div>
+          </div>
+
+          <!-- Search Input for Variance Table -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="relative flex-1 max-w-md">
+              <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input 
+                type="text" 
+                placeholder="Search product or service (e.g., nex levelapay, paytm, neo, srinvasarao)..." 
+                oninput="handleAdminVarianceSearch(this.value)"
+                class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 font-mono"
+              >
+            </div>
+            <span id="admin-variance-count-text" class="text-xs text-slate-400 font-mono">Showing 25 services</span>
+          </div>
+
+          <!-- Variance Table -->
+          <div class="overflow-x-auto rounded-2xl border border-slate-800">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-950/90 text-[11px] font-mono text-slate-400 uppercase tracking-wider border-b border-white/10">
+                  <th class="py-3.5 px-4 font-bold text-center w-12">#</th>
+                  <th class="py-3.5 px-4 font-bold">Category</th>
+                  <th class="py-3.5 px-4 font-bold">Service / Product Name</th>
+                  <th class="py-3.5 px-4 font-bold text-right">22-10-2026 Balance</th>
+                  <th class="py-3.5 px-4 font-bold text-right">23-10-2026 Balance</th>
+                  <th class="py-3.5 px-4 font-bold text-right">Variance (Difference)</th>
+                  <th class="py-3.5 px-4 font-bold text-right">% Shift</th>
+                  <th class="py-3.5 px-4 font-bold text-center">Movement Status</th>
+                </tr>
+              </thead>
+              <tbody id="admin-variance-table-body" class="divide-y divide-slate-800/60 font-mono">
+                <!-- Injected via renderAdminVarianceTable() in audit.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ================= SECTION 2: SINGLE-FILE FEE RULE AUDIT ================= -->
+      <div id="section-fee" class="space-y-8 hidden">
+
+        <!-- Fee Matrix Reference Banner -->
+        <div class="glass-card p-6 rounded-3xl border border-emerald-500/20 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
+                <i class="fas fa-scale-balanced"></i>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-white">VASAVI TRADERS Statutory Fee Rate Matrix</h3>
+                <p class="text-xs text-slate-400">Uploaded transactions are verified against these official contractual rates.</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-400 font-bold">
+              Active Policy
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2">
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-white/5 text-center">
+              <span class="text-[10px] uppercase font-mono text-slate-500 block">RuPay Network</span>
+              <span class="text-base font-extrabold text-emerald-400 font-mono mt-0.5 block">1.60%</span>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-white/5 text-center">
+              <span class="text-[10px] uppercase font-mono text-slate-500 block">Visa (All Cards)</span>
+              <span class="text-base font-extrabold text-blue-400 font-mono mt-0.5 block">1.80%</span>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-white/5 text-center">
+              <span class="text-[10px] uppercase font-mono text-slate-500 block">Mastercard (All)</span>
+              <span class="text-base font-extrabold text-orange-400 font-mono mt-0.5 block">1.80%</span>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-white/5 text-center">
+              <span class="text-[10px] uppercase font-mono text-slate-500 block">SBI / HDFC / OneCard</span>
+              <span class="text-base font-extrabold text-amber-400 font-mono mt-0.5 block">2.00%</span>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-white/5 text-center">
+              <span class="text-[10px] uppercase font-mono text-slate-500 block">Corporate Cards</span>
+              <span class="text-base font-extrabold text-purple-400 font-mono mt-0.5 block">2.00%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single File Upload Box -->
+        <div class="glass-card p-8 rounded-3xl space-y-6">
+          <div class="text-center max-w-xl mx-auto space-y-2">
+            <h3 class="text-xl font-extrabold text-white">Upload Transaction File for Fee Compliance Audit</h3>
+            <p class="text-xs text-slate-400">Verifies every individual transaction charge, flags overcharges, undercharges, or rate discrepancies.</p>
+          </div>
+
+          <!-- Dropzone -->
+          <div 
+            id="dropzone-fee" 
+            class="border-2 border-dashed border-slate-700 hover:border-emerald-400/60 rounded-2xl p-8 text-center transition-all bg-slate-900/40 hover:bg-emerald-500/5 cursor-pointer max-w-2xl mx-auto"
+            onclick="document.getElementById('file-fee-input').click()"
+          >
+            <input type="file" id="file-fee-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleSingleFeeFile(this.files[0])">
+            <i class="fas fa-file-circle-check text-4xl text-emerald-400 mb-3"></i>
+            <p class="text-base font-bold text-slate-200">Select or Drag Transaction Sheet</p>
+            <p class="text-xs text-slate-500 mt-1">Columns parsed: Txn ID, Amount, Card/Bank, Deducted Fee, Actual Payout</p>
+            <div id="fee-file-info" class="hidden mt-4 text-xs font-mono text-emerald-300 bg-emerald-950/60 py-2 px-4 rounded-xl border border-emerald-500/30 inline-flex items-center gap-2">
+              <i class="fas fa-check-circle"></i> <span id="fee-filename">transactions.xlsx</span> (<span id="fee-rowcount">0 rows</span>)
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-4 text-xs text-slate-400">
+            <span>Need sample format?</span>
+            <button onclick="downloadSampleFeeTemplate()" class="text-emerald-400 hover:text-emerald-300 font-semibold inline-flex items-center gap-1.5">
+              <i class="fas fa-download"></i> Download Fee Audit Template Excel
+            </button>
+          </div>
+        </div>
+
+        <!-- Single Fee Audit Results -->
+        <div id="fee-results-wrapper" class="space-y-6 hidden">
+          
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-emerald-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Compliant Transactions</span>
+              <span id="kpi-fee-correct-count" class="text-xl font-extrabold text-emerald-400 font-mono mt-1 block">0</span>
+              <span id="kpi-fee-correct-rate" class="text-[11px] text-slate-500">100% compliant</span>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-amber-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Overcharged Fees</span>
+              <span id="kpi-fee-over-count" class="text-xl font-extrabold text-amber-400 font-mono mt-1 block">0</span>
+              <span id="kpi-fee-over-amount" class="text-[11px] text-amber-400/80">₹0 overcharge</span>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-rose-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Undercharged (Leakage)</span>
+              <span id="kpi-fee-under-count" class="text-xl font-extrabold text-rose-400 font-mono mt-1 block">0</span>
+              <span id="kpi-fee-under-amount" class="text-[11px] text-rose-400/80">₹0 fee loss</span>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl border-t-2 border-t-cyan-400">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block tracking-wider">Total Audited Volume</span>
+              <span id="kpi-fee-total-vol" class="text-xl font-extrabold text-white font-mono mt-1 block">₹0</span>
+              <span id="kpi-fee-total-count" class="text-[11px] text-slate-500">0 transactions</span>
+            </div>
+          </div>
+
+          <!-- Fee Table -->
+          <div class="glass-card rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+            <div class="p-4 bg-slate-900/60 border-b border-white/5 flex items-center justify-between">
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono">Fee Compliance Audit Breakdown</h4>
+              <button onclick="exportFeeAuditReport()" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all flex items-center gap-1.5">
+                <i class="fas fa-file-excel"></i> Export Audit Sheet
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-900/90 text-slate-400 font-mono uppercase text-[11px] border-b border-white/10">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold">Status</th>
+                    <th class="py-3 px-4 font-semibold">Txn ID</th>
+                    <th class="py-3 px-4 font-semibold">Card / Issuer</th>
+                    <th class="py-3 px-4 font-semibold text-right">Gross Amount</th>
+                    <th class="py-3 px-4 font-semibold text-right">Expected Rate</th>
+                    <th class="py-3 px-4 font-semibold text-right">Expected Fee</th>
+                    <th class="py-3 px-4 font-semibold text-right">Charged Fee</th>
+                    <th class="py-3 px-4 font-semibold text-right">Variance</th>
+                    <th class="py-3 px-4 font-semibold text-center">Finding</th>
+                  </tr>
+                </thead>
+                <tbody id="fee-table-body" class="divide-y divide-white/5 font-mono">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-white/5 bg-slate-950 py-6 text-center text-xs text-slate-500">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <span>© 2026 VASAVI TRADERS. Proprietary Audit & Reconciliation Engine.</span>
+        <span class="font-mono text-slate-400">Pure Amount Matching Standard • No Identifiers Used</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ================= MANUAL APPROVAL MODAL ================= -->
+  <div id="manual-approval-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md hidden transition-all duration-200">
+    <div class="max-w-lg w-full mx-4 p-6 glass-card rounded-3xl border border-teal-500/40 shadow-2xl shadow-teal-500/10 relative text-left">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-400/30 flex items-center justify-center text-teal-400 text-lg">
+            <i class="fas fa-stamp"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-white">Manual Audit Approval</h3>
+            <p class="text-xs text-slate-400">Override discrepancy with authorized auditor sign-off</p>
+          </div>
+        </div>
+        <button onclick="closeApprovalModal()" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="py-4 space-y-4 text-xs">
+        <!-- Target Transaction Preview -->
+        <div id="modal-target-preview" class="p-3.5 bg-slate-900/90 rounded-2xl border border-white/10 space-y-2 font-mono">
+          <div class="flex justify-between items-center text-slate-300">
+            <span>Reconciliation Amount:</span>
+            <span id="modal-ref-display" class="font-bold text-teal-300 text-sm">₹500,000.00</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5 text-[11px]">
+            <div>
+              <span class="text-slate-500 block">Portal Total:</span>
+              <span id="modal-nexbook-amt" class="text-white font-bold">₹2,000,000</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Accounting Total:</span>
+              <span id="modal-bank-amt" class="text-emerald-400 font-bold">₹0.00</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block">Difference:</span>
+              <span id="modal-variance-amt" class="text-rose-400 font-bold">-₹2,000,000.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Approval Reason -->
+        <div>
+          <label class="block text-slate-300 font-bold mb-1.5 flex items-center justify-between">
+            <span>Approval Reason / Category <span class="text-rose-400">*</span></span>
+            <span class="text-[10px] text-slate-500 font-normal">Audit Compliance</span>
+          </label>
+          <select id="modal-approval-reason" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-teal-400 outline-none transition-all">
+            <option value="Lump-sum Consolidated Transfer in Accounting">Lump-sum Consolidated Transfer in Accounting</option>
+            <option value="Failed / Unsettled Portal Transaction">Failed / Unsettled Portal Transaction</option>
+            <option value="Test Transaction / 1 Rupee Verification">Test Transaction / 1 Rupee Verification</option>
+            <option value="Direct Cash Settlement Offline">Direct Cash Settlement Offline</option>
+            <option value="Bank Gateway Fee Deducted / Rounded Off">Bank Gateway Fee Deducted / Rounded Off</option>
+            <option value="Settled in Subsequent Batch">Settled in Subsequent Batch</option>
+            <option value="Management Authorized Override">Management Authorized Override</option>
+            <option value="Other Authorized Reason">Other Authorized Reason</option>
+          </select>
+        </div>
+
+        <!-- Auditor Remarks -->
+        <div>
+          <label class="block text-slate-300 font-bold mb-1.5">Auditor Remarks / Notes</label>
+          <textarea 
+            id="modal-approval-remarks" 
+            rows="2" 
+            placeholder="e.g., 4 x 500k + 9746 = 2,009,746 Internal Transfer consolidated entry verified in accounting sheet." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:border-teal-400 outline-none placeholder:text-slate-600 transition-all"
+          ></textarea>
+        </div>
+
+        <!-- Auditor Signature / Name -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Approved By</label>
+            <input 
+              type="text" 
+              id="modal-approval-author" 
+              value="Vasavi Auditor" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-400 outline-none font-mono"
+            >
+          </div>
+          <div>
+            <label class="block text-slate-300 font-bold mb-1">Approval Date</label>
+            <input 
+              type="text" 
+              id="modal-approval-date" 
+              readonly 
+              class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 font-mono outline-none"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+        <button onclick="closeApprovalModal()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition-all">
+          Cancel
+        </button>
+        <button onclick="confirmManualApproval()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 text-xs font-extrabold shadow-lg shadow-teal-500/25 transition-all flex items-center gap-2">
+          <i class="fas fa-check-double"></i> Confirm Manual Approval
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="audit-toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Audit Logic Script -->
+  <script src="audit.js"></script>
+</body>
+</html>
